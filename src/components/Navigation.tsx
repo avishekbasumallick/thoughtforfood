@@ -2,7 +2,6 @@ import { Menu, X, Home, TrendingUp, History, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
-import logo from '../assets/logo.png'; // Import the new logo
 
 interface NavigationProps {
   onDataUpdate: () => void; // Callback to notify parent of data changes
@@ -25,7 +24,7 @@ export default function Navigation({ onDataUpdate }: NavigationProps) {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center space-x-2">
-              <img src={logo} alt="ThoughtForFood Logo" className="h-10 w-auto" /> {/* Display the logo, now larger */}
+              <img src="/logo.png" alt="ThoughtForFood Logo" className="h-10 w-auto" /> {/* Display the logo, now larger */}
             </Link>
             <button
               onClick={() => setIsOpen(!isOpen)}
