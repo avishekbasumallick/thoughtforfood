@@ -1,4 +1,4 @@
-import { Menu, X, Home, TrendingUp, History, LogOut } from 'lucide-react';
+import { Menu, X, Home, TrendingUp, History, LogOut, Lightbulb } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
@@ -103,6 +103,17 @@ export default function Navigation({ onDataUpdate }: NavigationProps) {
               <History className="w-5 h-5" />
               <span className="font-medium">Meal History</span>
             </Link>
+            
+            <a
+              href="https://bit.ly/3MZTeeG"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setIsOpen(false)}
+              className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+            >
+              <Lightbulb className="w-5 h-5" />
+              <span className="font-medium">Roadmap</span>
+            </a>
 
             <div className="pt-6 border-t border-gray-200 mt-6">
               <button
