@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { supabase, Meal } from '../lib/supabase';
 import { MealEntryForm } from '../components/MealEntryForm';
 import { ConfirmationModal } from '../components/ConfirmationModal';
 import { DailyProgress } from '../components/DailyProgress';
 import { NutritionalData } from '../services/geminiService';
+import { TodaysMealsList } from '../components/TodaysMealsList'; // Import the new component
 
 interface DashboardProps {
   onDataUpdate: () => void;
@@ -31,7 +32,8 @@ export function Dashboard({ onDataUpdate }: DashboardProps) {
     const { data, error } = await supabase
       .from('meals')
       .select('*')
-      .order('meal_date', { ascending: false });
+      .order('meal_date', { ascending: false })
+      .order('created_at', { ascending: false }); // Order by creation time for consistent display
 
     if (error) {
       console.error('Error fetching meals:', error);
@@ -84,7 +86,7 @@ export function Dashboard({ onDataUpdate }: DashboardProps) {
         : 'Failed to save meal. Please try again.';
       alert(errorMessage);
     } else {
-      await fetchMeals();
+      await fetchMeals(); // Re-fetch all meals to update the list
       onDataUpdate(); // Notify parent that data has changed
       setModalOpen(false);
       setPendingMeal(null);
@@ -101,6 +103,11 @@ export function Dashboard({ onDataUpdate }: DashboardProps) {
     setModalOpen(false);
     setPendingMeal(null);
   };
+
+  // Filter meals for the selected date
+  const todaysMeals = useMemo(() => {
+    return meals.filter(meal => meal.meal_date === selectedDate);
+  }, [meals, selectedDate]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -127,10 +134,19 @@ export function Dashboard({ onDataUpdate }: DashboardProps) {
             onUpdate={onDataUpdate} // Pass onDataUpdate to MealEntryForm for water log updates
           />
 
+          {/* New section for Today's Meals */}
+          {loading ? (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <p className="text-gray-500 text-center">Loading today's meals...</p>
+            </div>
+          ) : (
+            <TodaysMealsList meals={todaysMeals} selectedDate={selectedDate} />
+          )}
+
           <div ref={dailyProgressRef}>
             {loading ? (
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <p className="text-gray-500 text-center">Loading...</p>
+                <p className="text-gray-500 text-center">Loading daily progress...</p>
               </div>
             ) : (
               <DailyProgress meals={meals} selectedDate={selectedDate} onDataUpdate={onDataUpdate} />
